@@ -132,7 +132,7 @@ module "s3_bucket" {
 
   versioning = {
     enabled    = true
-    mfa_delete = true
+    mfa_delete = false
   }
 
   logging = {

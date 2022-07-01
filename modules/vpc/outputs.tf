@@ -18,11 +18,11 @@ output "subnets" {
 output "subnet_cidr_blocks" {
   value = {
     "public" : [
-      for subnet in aws_subnet.public_subnets : 
+      for subnet in aws_subnet.public_subnets :
       subnet.cidr_block
     ],
     "private" : [
-      for subnet in aws_subnet.private_subnets : 
+      for subnet in aws_subnet.private_subnets :
       subnet.cidr_block
     ]
   }

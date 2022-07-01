@@ -27,7 +27,7 @@ resource "aws_security_group_rule" "cluster_admin_sg" {
 resource "aws_eks_cluster" "eks" {
   name     = var.network_name
   role_arn = aws_iam_role.eks_cluster.arn
-
+  version  = var.kubernetes_version
   vpc_config {
     security_group_ids = [
       aws_security_group.cluster_sg.id
@@ -54,15 +54,17 @@ resource "aws_eks_addon" "vpc_cni" {
 }
 
 resource "aws_eks_addon" "core_dns" {
-  cluster_name  = aws_eks_cluster.eks.name
-  addon_name    = "coredns"
-  addon_version = var.coredns_version
+  cluster_name      = aws_eks_cluster.eks.name
+  addon_name        = "coredns"
+  resolve_conflicts = "OVERWRITE"
+  addon_version     = var.coredns_version
 }
 
 resource "aws_eks_addon" "kube_proxy" {
-  cluster_name  = aws_eks_cluster.eks.name
-  addon_name    = "kube-proxy"
-  addon_version = var.kube_proxy_version
+  cluster_name      = aws_eks_cluster.eks.name
+  addon_name        = "kube-proxy"
+  resolve_conflicts = "OVERWRITE"
+  addon_version     = var.kube_proxy_version
 }
 
 resource "aws_eks_node_group" "workers" {
