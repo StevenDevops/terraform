@@ -3,22 +3,12 @@ data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
 data "aws_ami" "aws_linux" {
+  owners = ["amazon"]
   most_recent = true
-  owners      = ["amazon"]
 
   filter {
     name   = "name"
-    values = ["amzn-ami-hvm*"]
-  }
-
-  filter {
-    name   = "root-device-type"
-    values = ["ebs"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
+    values = ["amzn2-ami-hvm-*-x86_64-ebs"]
   }
 }
 

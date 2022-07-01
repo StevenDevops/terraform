@@ -1,48 +1,3 @@
-#Instance Role
-resource "aws_iam_role" "stepstone_role" {
-  name = "ssm-ec2"
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
-
-  tags = {
-    Name        = "stepstone"
-    Environment = terraform.workspace
-    Terraform   = true
-  }
-}
-
-#Instance Profile
-resource "aws_iam_instance_profile" "stepstone_profile" {
-  name = "stepstone"
-  role = aws_iam_role.stepstone_role.id
-}
-
-#Attach Policies to Instance Role
-resource "aws_iam_policy_attachment" "ssm_policy_attachment_1" {
-  name       = "ssm-policy-attachment_1"
-  roles      = [ aws_iam_role.stepstone_role.id ]
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-}
-
-resource "aws_iam_policy_attachment" "ssm_policy_attachment_2" {
-  name       = "ssm-policy-attachment_2"
-  roles      = [ aws_iam_role.stepstone_role.id ]
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
-}
-
 resource "aws_security_group" "stepstone" {
   name        = "stepstone"
   description = "stepstone"
@@ -95,8 +50,7 @@ resource "aws_instance" "stepstone" {
   lifecycle {
     ignore_changes = [
       user_data,
-      associate_public_ip_address,
-      ami
+      associate_public_ip_address
     ]
   }
 
@@ -106,7 +60,6 @@ resource "aws_instance" "stepstone" {
   ebs_optimized                        = true
   associate_public_ip_address          = true
   source_dest_check                    = false
-  iam_instance_profile                 = aws_iam_instance_profile.stepstone_profile.id
   instance_initiated_shutdown_behavior = "stop"
 
   vpc_security_group_ids = [
