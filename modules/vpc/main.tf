@@ -146,16 +146,6 @@ resource "aws_network_acl" "vpc_security_acl" {
     to_port    = 65535
   }
 
-  # allow all ports
-  ingress {
-    protocol   = "-1"
-    rule_no    = 400
-    action     = "allow"
-    cidr_block = var.ingressCIDRblock
-    from_port  = 0
-    to_port    = 0
-  }
-
   # allow egress port 22
   egress {
     protocol   = "tcp"
@@ -184,16 +174,6 @@ resource "aws_network_acl" "vpc_security_acl" {
     cidr_block = var.egressCIDRblock
     from_port  = 1024
     to_port    = 65535
-  }
-
-  # allow all ports
-  egress {
-    protocol   = "-1"
-    rule_no    = 400
-    action     = "allow"
-    cidr_block = var.egressCIDRblock
-    from_port  = 0
-    to_port    = 0
   }
 
   tags         = local.tags

@@ -168,32 +168,7 @@ module "s3_bucket" {
       noncurrent_version_expiration = {
         days = 30
       }
-    },
-    {
-      id                                     = "log1"
-      enabled                                = true
-      prefix                                 = "log1/"
-      abort_incomplete_multipart_upload_days = 7
-
-      noncurrent_version_transition = [
-        {
-          days          = 30
-          storage_class = "STANDARD_IA"
-        },
-        {
-          days          = 60
-          storage_class = "ONEZONE_IA"
-        },
-        {
-          days          = 90
-          storage_class = "GLACIER"
-        },
-      ]
-
-      noncurrent_version_expiration = {
-        days = 300
-      }
-    },
+    }
   ]
 
   server_side_encryption_configuration = {
