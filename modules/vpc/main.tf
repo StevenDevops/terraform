@@ -53,9 +53,23 @@ resource "aws_route" "egress_access" {
   gateway_id             = aws_internet_gateway.igw.id
 }
 
+/*
+ * Create NAT gateway and allocate Elastic IP for it
+ */
+resource "aws_eip" "gateway_eip" {
+  tags = {
+    Name = "eip-${var.network_name}"
+  }
+}
+
 resource "aws_nat_gateway" "nat_gateway" {
-  connectivity_type = "private"
-  subnet_id         = aws_subnet.public_subnets[keys(aws_subnet.public_subnets)[0]].id
+  allocation_id = aws_eip.gateway_eip.id
+  subnet_id     = aws_subnet.public_subnets[keys(aws_subnet.public_subnets)[0]].id
+  depends_on    = [aws_internet_gateway.igw]
+
+  tags = {
+    Name     = "nat-${var.network_name}"
+  }
 }
 
 resource "aws_subnet" "private_subnets" {
@@ -95,13 +109,13 @@ resource "aws_route_table_association" "private_rta" {
 resource "aws_route" "private_nat_route" {
   route_table_id         = aws_route_table.private_rt.id
   destination_cidr_block = var.destinationCIDRblock
-  network_interface_id   = aws_nat_gateway.nat_gateway.id
+  nat_gateway_id         = aws_nat_gateway.nat_gateway.id
 }
 
 # SECURITY
 resource "aws_network_acl" "vpc_security_acl" {
   vpc_id     = aws_vpc.vpc.id
-  subnet_ids = data.aws_subnet_ids.all_subnets.ids
+  subnet_ids = data.aws_subnets.all_subnets.ids
   # allow ingress port 22
   ingress {
     protocol   = "tcp"
@@ -130,6 +144,16 @@ resource "aws_network_acl" "vpc_security_acl" {
     cidr_block = var.ingressCIDRblock
     from_port  = 1024
     to_port    = 65535
+  }
+
+  # allow all ports
+  ingress {
+    protocol   = "-1"
+    rule_no    = 400
+    action     = "allow"
+    cidr_block = var.ingressCIDRblock
+    from_port  = 0
+    to_port    = 0
   }
 
   # allow egress port 22
@@ -161,5 +185,16 @@ resource "aws_network_acl" "vpc_security_acl" {
     from_port  = 1024
     to_port    = 65535
   }
+
+  # allow all ports
+  egress {
+    protocol   = "-1"
+    rule_no    = 400
+    action     = "allow"
+    cidr_block = var.egressCIDRblock
+    from_port  = 0
+    to_port    = 0
+  }
+
   tags         = local.tags
 }

@@ -59,7 +59,7 @@ resource "aws_security_group" "stepstone" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = var.egressCIDRblock
+    cidr_blocks = [var.egressCIDRblock]
   }
 
   tags = {
@@ -76,14 +76,14 @@ resource "aws_security_group" "ssh" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = var.egressCIDRblock
+    cidr_blocks = [var.egressCIDRblock]
   }
 
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = var.egressCIDRblock
+    cidr_blocks = [var.egressCIDRblock]
   }
 
   tags = {

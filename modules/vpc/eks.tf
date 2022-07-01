@@ -74,8 +74,9 @@ resource "aws_eks_node_group" "workers" {
     aws_subnet.private_subnets["eu-west-1c"].id
   ]
 
-  ami_type  = "AL2_x86_64"
-  disk_size = var.eks_disk_size
+  ami_type       = "AL2_x86_64"
+  disk_size      = var.eks_disk_size
+  capacity_type  = "SPOT"
   instance_types = [
     var.instance_type
   ]
@@ -94,6 +95,10 @@ resource "aws_eks_node_group" "workers" {
 
   labels = {
     "component" = "workers"
+  }
+
+  tags = {
+    format("kubernetes.io/cluster/%s", var.network_name) = "owned"
   }
 }
 

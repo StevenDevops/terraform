@@ -1,16 +1,15 @@
 # README #
 
-# How to use it?
+# How to run?
 
 1. Update your terraform account credentials in ~/.aws/credential
-2. Run terraform init
-3. Run terraform workspace new dev (or prod)
-4. Terraform plan & apply
+2. Run `terraform init`
+3. Run `terraform workspace new dev` (or prod)
+4. Run `terraform plan && terraform apply`
 
 ## What is this repository for? ##
 
 - Creating resources for dev/prod VPC
-- Version 0.1
 
 ### VPC
 | VPC Name       | IPv4 CIDR      |

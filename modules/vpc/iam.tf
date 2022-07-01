@@ -5,23 +5,6 @@ resource "aws_iam_role" "eks_cluster" {
 
 }
 
-data "aws_iam_policy_document" "iam_for_eks" {
-  statement {
-    actions = ["sts:AssumeRole"]
-    effect  = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["ec2.amazonaws.com"]
-    }
-
-    principals {
-      type        = "AWS"
-      identifiers = [data.aws_iam_user.user_name.arn]
-    }
-  }
-}
-
 resource "aws_iam_role_policy_attachment" "cluster_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
   role       = aws_iam_role.eks_cluster.name
@@ -36,34 +19,6 @@ resource "aws_iam_role" "worker_node" {
   name = "worker-node"
 
   assume_role_policy = data.aws_iam_policy_document.iam_for_sa.json
-}
-
-data "aws_iam_policy_document" "iam_for_sa" {
-  statement {
-    actions = ["sts:AssumeRole"]
-    effect  = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["ec2.amazonaws.com"]
-    }
-  }
-
-  statement {
-    actions = ["sts:AssumeRoleWithWebIdentity"]
-    effect  = "Allow"
-
-    condition {
-      test     = "StringEquals"
-      variable = "${replace(aws_iam_openid_connect_provider.cluster.url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:kube-system:aws-node"]
-    }
-
-    principals {
-      identifiers = [aws_iam_openid_connect_provider.cluster.arn]
-      type        = "Federated"
-    }
-  }
 }
 
 resource "aws_iam_policy" "ebs_csi_policy" {

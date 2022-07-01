@@ -1,9 +1,10 @@
 # VPC FLOW LOG
 resource "aws_flow_log" "vpc" {
-  iam_role_arn    = aws_iam_role.vpc.arn
-  log_destination = module.s3_bucket.s3_bucket_arn
-  traffic_type    = "ALL"
-  vpc_id          = aws_vpc.vpc.id
+  iam_role_arn         = aws_iam_role.vpc.arn
+  log_destination      = module.s3_bucket.s3_bucket_arn
+  log_destination_type = "s3"
+  traffic_type         = "ALL"
+  vpc_id               = aws_vpc.vpc.id
 }
 
 resource "aws_iam_role" "vpc" {
@@ -130,7 +131,8 @@ module "s3_bucket" {
   }
 
   versioning = {
-    enabled = true
+    enabled    = true
+    mfa_delete = true
   }
 
   logging = {
@@ -203,23 +205,10 @@ module "s3_bucket" {
     }
   }
 
-  object_lock_configuration = {
-    object_lock_enabled = "Enabled"
-    rule = {
-      default_retention = {
-        mode = "GOVERNANCE"
-        days = 1
-      }
-    }
-  }
 
   # S3 bucket-level Public Access Block configuration
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
-
-  # S3 Bucket Ownership Controls
-  control_object_ownership = true
-  object_ownership         = "BucketOwnerPreferred"
 }

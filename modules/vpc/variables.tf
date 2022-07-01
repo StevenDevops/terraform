@@ -19,13 +19,13 @@ variable "destinationCIDRblock" {
 }
 
 variable "ingressCIDRblock" {
-  type    = list(string)
-  default = [ "0.0.0.0/0" ]
+  type    = string
+  default = "0.0.0.0/0"
 }
 
 variable "egressCIDRblock" {
-  type    = list(string)
-  default = [ "0.0.0.0/0" ]
+  type    = string
+  default = "0.0.0.0/0"
 }
 
 variable "instance_type" {
