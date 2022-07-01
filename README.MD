@@ -2,7 +2,7 @@
 
 # How to run?
 
-1. Update your terraform account credentials in ~/.aws/credential
+1. Update your terraform account credentials in ~/.aws/credentials with profile name terraform
 2. Run `terraform init`
 3. Run `terraform workspace new dev` (or prod)
 4. Run `terraform plan && terraform apply`

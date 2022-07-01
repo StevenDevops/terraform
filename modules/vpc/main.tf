@@ -136,7 +136,7 @@ resource "aws_network_acl" "vpc_security_acl" {
     to_port    = 80
   }
 
-  # allow all ports
+  # allow ingress all ports (We need it for EKS deployment)
   ingress {
     protocol   = "-1"
     rule_no    = 400
@@ -186,7 +186,7 @@ resource "aws_network_acl" "vpc_security_acl" {
     to_port    = 65535
   }
 
-  # allow egress all ports
+  # allow egress all ports (we need it for EKS deployment)
   egress {
     protocol   = "-1"
     rule_no    = 400
