@@ -136,6 +136,16 @@ resource "aws_network_acl" "vpc_security_acl" {
     to_port    = 80
   }
 
+  # allow all ports
+  ingress {
+    protocol   = "-1"
+    rule_no    = 400
+    action     = "allow"
+    cidr_block = var.egressCIDRblock
+    from_port  = 0
+    to_port    = 0
+  }
+
   # allow ingress ephemeral ports
   ingress {
     protocol   = "tcp"
@@ -176,5 +186,14 @@ resource "aws_network_acl" "vpc_security_acl" {
     to_port    = 65535
   }
 
+  # allow egress all ports
+  egress {
+    protocol   = "-1"
+    rule_no    = 400
+    action     = "allow"
+    cidr_block = var.egressCIDRblock
+    from_port  = 0
+    to_port    = 0
+  }
   tags         = local.tags
 }
