@@ -50,6 +50,7 @@ resource "aws_eks_addon" "vpc_cni" {
   cluster_name             = aws_eks_cluster.eks.name
   addon_name               = "vpc-cni"
   addon_version            = var.vpc_cni_version
+  resolve_conflicts        = "OVERWRITE"
   service_account_role_arn = aws_iam_role.worker_node.arn
 }
 
